@@ -17,4 +17,7 @@ class Animation : Keyframer() {
     val whole by DoubleChannel("whole")
     val third by DoubleChannel("third")
     val quarter by DoubleChannel("quarter")
+    val introSlider0 by DoubleChannel("introSlider0")
+    val introSlider1 by DoubleChannel("introSlider1")
+    val introSlider2 by DoubleChannel("introSlider2")
 }
