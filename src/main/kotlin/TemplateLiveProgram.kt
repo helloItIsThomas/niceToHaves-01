@@ -4,10 +4,12 @@ import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.colorBuffer
 import org.openrndr.draw.isolatedWithTarget
 import org.openrndr.draw.renderTarget
+import org.openrndr.extra.color.presets.ANTIQUE_WHITE
 import org.openrndr.extra.color.presets.ORANGE_RED
 import org.openrndr.extra.olive.oliveProgram
 import org.openrndr.math.IntVector2
 import org.openrndr.math.map
+import org.openrndr.shape.Rectangle
 import java.io.File
 
 fun main() = application {
@@ -41,8 +43,12 @@ fun main() = application {
         var GLOBAL_speed: Double
         val loopDelay = 1.0
 
+        var myRectangle: Rectangle
+
         extend {
-            GLOBAL_speed = frameCount * 0.03
+//            GLOBAL_speed = frameCount * 0.0088
+            GLOBAL_speed = frameCount * 0.00333
+//            GLOBAL_speed = frameCount * 0.033
             animArr.forEachIndexed { i, a ->
                 a((i * 0.3 + GLOBAL_speed))
             }
@@ -52,23 +58,43 @@ fun main() = application {
                 fadeStartTime = seconds
             }
             val timeElapsed = seconds - fadeStartTime
-            animArr.forEach { a->
-
-            }
 
 
             val printMe0 = animArr[0].introSlider0
             println("animArr[0].introSlider0:   $printMe0")
             println("timeElapsed:   $timeElapsed")
 
-//            drawer.fill = ColorRGBa.BLACK.opac®ify((frameCount*0.005).map(
-            drawer.fill = ColorRGBa.BLUE.opacify((animArr[0].introSlider0).map(
+//            drawer.fill = ColorRGBa.BLACK.opacify((frameCount*0.005).map(
+            drawer.fill = null
+            drawer.stroke = ColorRGBa.ANTIQUE_WHITE.opacify((animArr[0].introSlider0).map(
                 1.0,
                 0.0,
                 0.0,
                 1.0)
             )
-            drawer.rectangle(drawer.bounds)
+
+            val mappedVal = (animArr[0].introSlider0).map(
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            )
+
+
+            myRectangle = Rectangle(
+                (drawer.bounds.center.x - (drawer.bounds.width * 0.25)*mappedVal),
+                (drawer.bounds.center.y  - (drawer.bounds.height * 0.25)*mappedVal),
+                (drawer.bounds.width * 0.5)*mappedVal,
+                (drawer.bounds.height * 0.5)*mappedVal,
+            )
+//            drawer.rectangle(myRectangle.contour.sub(0.1, 0.2))
+            drawer.contour(
+                myRectangle.contour.sub (
+                    mappedVal,
+//                    mappedVal/0.9 + mappedVal
+                    (mappedVal*mappedVal* 2.333) + mappedVal
+                )
+            )
         }
     }
 }
