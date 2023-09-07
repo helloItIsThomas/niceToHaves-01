@@ -1,4 +1,5 @@
 import demos.classes.Animation
+import org.openrndr.KEY_ESCAPE
 import org.openrndr.application
 import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.colorBuffer
@@ -19,10 +20,21 @@ fun main() = application {
         hideWindowDecorations = true
         windowAlwaysOnTop = true
         position = IntVector2(1285,110)
-//        windowTransparent = true
+        windowTransparent = true
     }
 
     oliveProgram {
+
+        var frameCounter = 0.0
+        var exitRequested = false
+
+
+        keyboard.keyDown.listen { event ->
+            if (event.key == KEY_ESCAPE) {
+                exitRequested = true
+            }
+        }
+
         val message = "hello"
         val animArr = mutableListOf<Animation>()
         val charArr = message.toCharArray()
@@ -44,57 +56,71 @@ fun main() = application {
         val loopDelay = 1.0
 
         var myRectangle: Rectangle
+        var plugMeIn: Double
+
 
         extend {
-//            GLOBAL_speed = frameCount * 0.0088
-            GLOBAL_speed = frameCount * 0.00333
-//            GLOBAL_speed = frameCount * 0.033
-            animArr.forEachIndexed { i, a ->
-                a((i * 0.3 + GLOBAL_speed))
-            }
-
-            drawer.clear(ColorRGBa.BLACK)
-            if (frameCount == 0) {
-                fadeStartTime = seconds
-            }
-            val timeElapsed = seconds - fadeStartTime
-
-
-            val printMe0 = animArr[0].introSlider0
-            println("animArr[0].introSlider0:   $printMe0")
-            println("timeElapsed:   $timeElapsed")
-
-//            drawer.fill = ColorRGBa.BLACK.opacify((frameCount*0.005).map(
-            drawer.fill = null
-            drawer.stroke = ColorRGBa.ANTIQUE_WHITE.opacify((animArr[0].introSlider0).map(
-                1.0,
-                0.0,
-                0.0,
-                1.0)
-            )
-
+//                        GLOBAL_speed = frameCount * 0.0333
+                        GLOBAL_speed = frameCount * 0.0222
+//                        GLOBAL_speed = frameCount * 0.00922
+//                        GLOBAL_speed = frameCount * 0.0088
+//            GLOBAL_speed = frameCount * 0.00333
+            //            GLOBAL_speed = frameCount * 0.033
             val mappedVal = (animArr[0].introSlider0).map(
                 1.0,
                 0.0,
                 0.0,
                 1.0
             )
+            animArr.forEachIndexed { i, a ->
+                if (i != 1) a((i * 0.3 + GLOBAL_speed))
+            }
+            plugMeIn = mappedVal
 
+            if (exitRequested) {
+                frameCounter += 0.01
+//                animArr[1]((1 * 0.3 + frameCounter))
+//                plugMeIn = animArr[1].pathSlider
+                plugMeIn = frameCounter.map(
+                    0.0,
+                    0.333,
+                    1.0,
+                    0.0
+                )
+                if (frameCounter >= 1) {
+                    application.exit()
+                }
+            }
+
+            drawer.clear(ColorRGBa.TRANSPARENT)
+            if (frameCount == 0) {
+                fadeStartTime = seconds
+            }
+            val timeElapsed = seconds - fadeStartTime
+
+
+
+//            drawer.fill = ColorRGBa.BLACK.opacify((frameCount*0.005).map(
+            drawer.fill = null
+//            drawer.stroke = ColorRGBa.ANTIQUE_WHITE.opacify((animArr[0].introSlider0).map(
+
+
+
+
+            drawer.fill = ColorRGBa.BLACK.opacify(plugMeIn)
 
             myRectangle = Rectangle(
-                (drawer.bounds.center.x - (drawer.bounds.width * 0.25)*mappedVal),
-                (drawer.bounds.center.y  - (drawer.bounds.height * 0.25)*mappedVal),
-                (drawer.bounds.width * 0.5)*mappedVal,
-                (drawer.bounds.height * 0.5)*mappedVal,
+                (drawer.bounds.center.x - (drawer.bounds.width * 0.25)*plugMeIn),
+                (drawer.bounds.center.y  - (drawer.bounds.height * 0.25)*plugMeIn),
+                (drawer.bounds.width * 0.5)*plugMeIn,
+                (drawer.bounds.height * 0.5)*plugMeIn,
             )
-//            drawer.rectangle(myRectangle.contour.sub(0.1, 0.2))
-            drawer.contour(
-                myRectangle.contour.sub (
-                    mappedVal,
-//                    mappedVal/0.9 + mappedVal
-                    (mappedVal*mappedVal* 2.333) + mappedVal
-                )
-            )
+//            drawer.stroke = null
+            drawer.stroke = ColorRGBa.ANTIQUE_WHITE.opacify(plugMeIn)
+            drawer.rectangle(myRectangle)
+//            drawer.contour(myRectangle.contour.sub(
+//                1 - (plugMeIn + 0.06), 1.0
+//            ))
         }
     }
 }

@@ -3,6 +3,8 @@ import org.openrndr.draw.FontMap
 import org.openrndr.draw.loadFont
 import java.io.File
 
+
+
 fun typeScale(size: Int, base: Double, scaleIndex: Int): DoubleArray {
     val scales = listOf(1.067, 1.125, 1.200, 1.250, 1.333, 1.414, 1.500, 1.618)
     val result: DoubleArray = DoubleArray(size)
