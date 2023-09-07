@@ -7,11 +7,20 @@ import org.openrndr.draw.isolatedWithTarget
 import org.openrndr.draw.renderTarget
 import org.openrndr.extra.color.presets.ANTIQUE_WHITE
 import org.openrndr.extra.color.presets.ORANGE_RED
+import org.openrndr.extra.color.presets.PALE_GREEN
+import org.openrndr.extra.compositor.compose
+import org.openrndr.extra.compositor.draw
+import org.openrndr.extra.compositor.layer
+import org.openrndr.extra.compositor.post
+import org.openrndr.extra.jumpfill.fx.OuterGlow
 import org.openrndr.extra.olive.oliveProgram
+import org.openrndr.extra.shapes.RoundedRectangle
+import org.openrndr.extra.shapes.roundedRectangle
 import org.openrndr.math.IntVector2
 import org.openrndr.math.map
 import org.openrndr.shape.Rectangle
 import java.io.File
+import kotlin.math.cos
 
 fun main() = application {
     configure {
@@ -57,6 +66,20 @@ fun main() = application {
 
         var myRectangle: Rectangle
         var plugMeIn: Double
+
+        val c = compose {
+            layer {
+                draw {
+                    drawer.fill = ColorRGBa.PINK
+                    drawer.circle(width / 2.0, height / 2.0, 200.0)
+                }
+
+
+                post(OuterGlow()) {
+                    this.width = (cos(seconds) * 0.5 + 0.5) * 100.0
+                }
+            }
+        }
 
 
         extend {
@@ -105,22 +128,30 @@ fun main() = application {
 //            drawer.stroke = ColorRGBa.ANTIQUE_WHITE.opacify((animArr[0].introSlider0).map(
 
 
-
-
             drawer.fill = ColorRGBa.BLACK.opacify(plugMeIn)
 
             myRectangle = Rectangle(
                 (drawer.bounds.center.x - (drawer.bounds.width * 0.25)*plugMeIn),
                 (drawer.bounds.center.y  - (drawer.bounds.height * 0.25)*plugMeIn),
                 (drawer.bounds.width * 0.5)*plugMeIn,
-                (drawer.bounds.height * 0.5)*plugMeIn,
+                (drawer.bounds.height * 0.5)*plugMeIn
             )
 //            drawer.stroke = null
-            drawer.stroke = ColorRGBa.ANTIQUE_WHITE.opacify(plugMeIn)
-            drawer.rectangle(myRectangle)
+            drawer.stroke = ColorRGBa.PALE_GREEN.opacify(plugMeIn)
+//            drawer.shape(myRectangle.shape)
+
+
+            drawer.roundedRectangle(
+                (drawer.bounds.center.x - (drawer.bounds.width * 0.25)*plugMeIn)+ 0.1,
+                (drawer.bounds.center.y  - (drawer.bounds.height * 0.25)*plugMeIn)+ 0.1,
+                (drawer.bounds.width * 0.5)*plugMeIn + 0.1,
+                (drawer.bounds.height * 0.5)*plugMeIn + 0.1,
+                plugMeIn * 10.0
+            )
 //            drawer.contour(myRectangle.contour.sub(
 //                1 - (plugMeIn + 0.06), 1.0
 //            ))
+            c.draw(drawer)
         }
     }
 }
