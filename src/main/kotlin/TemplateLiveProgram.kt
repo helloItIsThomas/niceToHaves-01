@@ -38,18 +38,35 @@ fun main() = application {
         var fadeStartTime = 0.0
         var fadeDuration = 1.0
         var waitDuration = 1.0
+        var GLOBAL_speed: Double
+        val loopDelay = 1.0
 
         extend {
-            drawer.clear(ColorRGBa.BLUE)
+            GLOBAL_speed = frameCount * 0.03
+            animArr.forEachIndexed { i, a ->
+                a((i * 0.3 + GLOBAL_speed))
+            }
+
+            drawer.clear(ColorRGBa.BLACK)
             if (frameCount == 0) {
                 fadeStartTime = seconds
             }
             val timeElapsed = seconds - fadeStartTime
-            drawer.fill = ColorRGBa.ORANGE_RED.opacify((frameCount*0.005).map(
+            animArr.forEach { a->
+
+            }
+
+
+            val printMe0 = animArr[0].introSlider0
+            println("animArr[0].introSlider0:   $printMe0")
+            println("timeElapsed:   $timeElapsed")
+
+//            drawer.fill = ColorRGBa.BLACK.opac®ify((frameCount*0.005).map(
+            drawer.fill = ColorRGBa.BLUE.opacify((animArr[0].introSlider0).map(
+                1.0,
                 0.0,
-                1.0,
-                1.0,
-                0.0)
+                0.0,
+                1.0)
             )
             drawer.rectangle(drawer.bounds)
         }
